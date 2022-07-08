@@ -94,6 +94,9 @@ apt_actions() {
     sudo wget -O /etc/apt/trusted.gpg.d/keydb.gpg https://download.keydb.dev/open-source-dist/keyring.gpg
     sudo apt update
     sudo apt install keydb-server keydb-tools -y
+
+    # additional action
+    systemctl enable --now keydb-server
 }
 
 # Actions
