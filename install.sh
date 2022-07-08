@@ -109,6 +109,7 @@ apt_actions() {
         exit 1
     else
 
+        echo -e "[${GREEN}✓${NC}] Install Debian packages"
         echo "deb https://download.keydb.dev/open-source-dist $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/keydb.list
         sudo wget -O /etc/apt/trusted.gpg.d/keydb.gpg https://download.keydb.dev/open-source-dist/keyring.gpg
         sudo apt update
@@ -126,7 +127,6 @@ init() {
 
     if [[ "$DEB" -eq "1" ]]; then
         Info "$ON_CHECK" "Run Debian installer..."
-        echo -e "[${GREEN}✓${NC}] Install Debian packages"
         apt_actions
     else
         Info "$ON_CHECK" "Nit supported distro. Exit..."
