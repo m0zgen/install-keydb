@@ -89,14 +89,34 @@ checkDistro() {
   fi
 }
 
-apt_actions() {
-    echo "deb https://download.keydb.dev/open-source-dist $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/keydb.list
-    sudo wget -O /etc/apt/trusted.gpg.d/keydb.gpg https://download.keydb.dev/open-source-dist/keyring.gpg
-    sudo apt update
-    sudo apt install keydb-server keydb-tools -y
+# Checking active status from systemd unit
+service_exists() {
+    local n=$1
+    if [[ $(systemctl list-units --all -t service --full --no-legend "$n.service" | sed 's/^\s*//g' | cut -f1 -d' ') == $n.service ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
 
-    # additional action
-    systemctl enable --now keydb-server
+apt_actions() {
+
+    if service_exists "keydb-server"; then
+        Info "$ON_CHECK" "KeyDB service already installed. Exit..."
+        exit 1
+    elif service_exists "redis-server"; then
+        Info "$ON_CHECK" "Redis service already installed. Exit..."
+        exit 1
+    else
+
+        echo "deb https://download.keydb.dev/open-source-dist $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/keydb.list
+        sudo wget -O /etc/apt/trusted.gpg.d/keydb.gpg https://download.keydb.dev/open-source-dist/keyring.gpg
+        sudo apt update
+        sudo apt install keydb-server keydb-tools -y
+
+        # additional action
+        systemctl enable --now keydb-server
+    fi
 }
 
 # Actions
