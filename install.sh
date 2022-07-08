@@ -129,7 +129,7 @@ init() {
         Info "$ON_CHECK" "Run Debian installer..."
         apt_actions
     else
-        Info "$ON_CHECK" "Nit supported distro. Exit..."
+        Info "$ON_CHECK" "Not supported distro. Exit..."
         exit 1
     fi
 
